@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Texticle — Documents, Flashcards & Quiz Studio</title>
+<meta name="description" content="Texticle by GlassPickle is a free online document editor, flashcard maker, and quiz game creator.">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#f4f1eb">
+<meta property="og:title" content="Texticle — Make room for good ideas">
+<meta property="og:description" content="Write documents, study with flashcards, and create quiz games.">
+<style>
+:root {
+  --bg:#f4f1eb; --paper:#fffdf9; --ink:#24302c; --muted:#778079;
+  --line:#e6e0d6; --green:#245b4a; --green-light:#e1ede5;
+  --orange:#e6a45c; --blue:#596fe4; --blue-light:#edf0ff;
+  --red:#ad4940; --shadow:0 8px 28px #26352d0a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:10px;padding:9px 12px;font-weight:650}
+button:hover{filter:brightness(.97)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.primary{background:var(--green);border-color:var(--green);color:white}
+.blue{background:var(--blue);border-color:var(--blue);color:white}
+.soft{background:var(--green-light);border-color:transparent;color:var(--green)}
+.danger{color:var(--red)}
+input,select,textarea{min-width:0;border:1px solid var(--line);border-radius:9px;padding:10px;background:white;color:var(--ink);max-width:100%}
+input:focus,select:focus,textarea:focus,[contenteditable=true]:focus{outline:2px solid #91b5a5;outline-offset:1px}
+.app{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:100vh}
+.sidebar{background:#fbf9f4;border-right:1px solid var(--line);padding:20px 14px;display:flex;flex-direction:column;gap:22px}
+.brand{display:flex;align-items:center;gap:10px;padding:0 7px}
+.brand-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(145deg,#245b4a,#9fbea6);color:white;font-weight:900;font-size:20px}
+.brand-name{font-size:22px;font-weight:850;letter-spacing:-1px}
+.brand-name span{color:var(--orange)}
+.brand small{display:block;font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted)}
+.nav-label{font-size:10px;letter-spacing:1.5px;font-weight:800;color:#9a948b;padding:0 10px 6px}
+.nav{display:grid;gap:5px}
+.nav button{border:0;background:transparent;text-align:left;color:#67726b;display:flex;gap:11px;align-items:center}
+.nav button.active{background:var(--green-light);color:var(--green)}
+.nav-icon{width:20px;text-align:center;font-size:17px}
+.sidebar-note{margin-top:auto;background:#efe8dc;padding:15px;border-radius:15px}
+.sidebar-note strong{display:block;margin:6px 0}
+.sidebar-note p{font-size:12px;color:#746e64}
+.main{min-width:0}
+.topbar{height:70px;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:0 26px;border-bottom:1px solid var(--line);background:#f8f5ef}
+.search{flex:1;max-width:460px}
+.search input{width:100%;background:#fffdf9}
+.saved{font-size:11px;font-weight:750;color:var(--green);background:var(--green-light);border-radius:30px;padding:8px 11px}
+.content{max-width:1500px;margin:auto;padding:26px}
+.view.hidden,.hidden{display:none!important}
+.page-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:22px}
+.eyebrow{font-size:10px;font-weight:850;letter-spacing:1.6px;color:var(--green)}
+h1{font-size:30px;letter-spacing:-1.1px;margin:5px 0}
+.page-head p{color:var(--muted);margin:0}
+.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin-bottom:20px}
+.stat,.panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:17px;box-shadow:var(--shadow);min-width:0}
+.stat span{font-size:12px;color:var(--muted)}
+.stat strong{display:block;font-size:26px;letter-spacing:-1px}
+.stat small{color:var(--green)}
+.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.panel-head h2{font-size:16px;margin:0}
+.panel-head p{font-size:12px;color:var(--muted);margin:3px 0 0}
+.home-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:16px}
+.quick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.quick{padding:15px;text-align:left;background:white}
+.quick .emoji{font-size:23px}
+.quick strong{display:block;margin:8px 0 4px}
+.quick small{color:var(--muted)}
+.file-list{display:grid;gap:8px}
+.file-item{display:flex;align-items:center;gap:10px;border:1px solid #eee8df;padding:10px;border-radius:12px}
+.file-icon{width:40px;height:42px;border-radius:9px;background:var(--green-light);color:var(--green);display:grid;place-items:center;font-size:10px;font-weight:900}
+.file-meta{flex:1;min-width:0}
+.file-meta strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file-meta small{font-size:11px;color:var(--muted)}
+.empty{padding:28px 12px;text-align:center;color:var(--muted)}
+.empty strong{display:block;color:var(--ink);margin-bottom:4px}
+.doc-layout{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:15px;align-items:start}
+.doc-toolbar{display:flex;flex-wrap:wrap;gap:6px;padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid var(--line)}
+.doc-toolbar button{font-size:12px;padding:7px 9px}
+.doc-toolbar select{font-size:12px;padding:7px}
+.editor-paper{background:white;border:1px solid #e9e5dd;border-radius:10px;min-height:600px;overflow:hidden}
+#editor{min-height:600px;padding:clamp(24px,6vw,75px);outline:none;font:16px/1.8 Georgia,serif;overflow-wrap:anywhere}
+#editor h1,#editor h2,#editor h3{font-family:system-ui,sans-serif;line-height:1.25}
+#editor img{max-width:100%;height:auto}
+#editor table{border-collapse:collapse;width:100%}
+#editor td,#editor th{border:1px solid #ddd;padding:8px}
+#editor blockquote{border-left:3px solid var(--orange);padding-left:15px;color:#67726b}
+.doc-side{display:grid;gap:12px}
+.field{display:grid;gap:6px;margin:10px 0}
+.field label{font-size:12px;font-weight:750}
+.field input,.field textarea,.field select{width:100%}
+.status{font-size:11px;color:var(--green)}
+.doc-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:12px}
+.doc-bar input{max-width:300px;font-weight:750;flex:1}
+.dropzone{padding:23px;border:1.5px dashed #c9c4b8;border-radius:14px;text-align:center;margin-top:14px}
+.dropzone p{color:var(--muted);font-size:12px}
+.viewer{background:#e9e6e0;border-radius:12px;padding:15px;max-height:65vh;overflow:auto;display:grid;gap:16px;justify-items:center}
+.pdf-page{background:white;max-width:100%;box-shadow:0 4px 16px #202a3518}
+.slide{width:min(100%,850px);aspect-ratio:16/9;background:white;padding:7%;display:flex;flex-direction:column;justify-content:center;box-shadow:0 4px 16px #202a3518;overflow:hidden}
+.slide h2{color:var(--green);font-size:clamp(20px,3vw,36px)}
+.slide p{white-space:pre-wrap;font-size:clamp(13px,1.5vw,21px)}
+.study-layout{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:16px}
+.study-card{min-height:350px;border-radius:23px;background:linear-gradient(140deg,#244c42,#47806c);color:white;padding:clamp(24px,5vw,50px);display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 18px 45px #234e3e24;position:relative;overflow:hidden}
+.study-card:after{content:"";position:absolute;width:220px;height:220px;border:1px solid #ffffff20;border-radius:50%;right:-80px;top:-95px;box-shadow:0 0 0 30px #ffffff09,0 0 0 60px #ffffff06;pointer-events:none}
+.study-card.answer{background:linear-gradient(140deg,#384d83,#697de4)}
+.study-card .tiny{font-size:10px;letter-spacing:1.5px;color:#d8e6dd;font-weight:800;z-index:1}
+.study-text{font-size:clamp(23px,3vw,36px);line-height:1.3;font-weight:750;white-space:pre-wrap;z-index:1}
+.study-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px;z-index:1}
+.study-card button{background:#ffffff20;border-color:#ffffff55;color:white}
+.progress{height:6px;background:#e8e6e0;border-radius:30px;overflow:hidden;margin:10px 0}
+.progress span{height:100%;width:0;display:block;background:var(--orange);transition:width .2s}
+.deck-item{border:1px solid var(--line);padding:12px;border-radius:12px;margin:8px 0}
+.deck-item strong{display:block}
+.deck-item small{color:var(--muted)}
+.deck-item.active{background:#f0f5f0;border-color:#9dbbab}
+.rating-row{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap}
+.rating-row button{flex:1}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-grid .full{grid-column:1/-1}
+.quiz-host{background:#141d3b;color:white;border-radius:19px;padding:clamp(20px,4vw,38px);min-height:350px}
+.quiz-top{display:flex;justify-content:space-between;gap:10px;color:#cbd2ec}
+.quiz-question{font-size:clamp(24px,4vw,40px);font-weight:850;line-height:1.15;margin:28px 0}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.answer-btn{padding:17px;min-height:70px;text-align:left;border:0;color:white;border-radius:12px;background:#4b5db0;font-size:15px}
+.answer-btn:nth-child(2){background:#b64d67}
+.answer-btn:nth-child(3){background:#bd8936}
+.answer-btn:nth-child(4){background:#218c83}
+.answer-btn.correct{outline:4px solid #8ce4b5}
+.answer-btn.wrong{opacity:.5}
+.quiz-score{font-size:48px;font-weight:900}
+.note{font-size:11px;color:var(--muted);line-height:1.6}
+.toast{position:fixed;bottom:20px;right:20px;background:#202a35;color:white;border-radius:12px;padding:12px 16px;z-index:99;max-width:90vw}
+@media(max-width:1000px){.app{grid-template-columns:185px minmax(0,1fr)}.doc-layout,.study-layout{grid-template-columns:1fr}.doc-side{grid-template-columns:repeat(2,minmax(0,1fr))}.home-grid{grid-template-columns:1fr}}
+@media(max-width:680px){.app{grid-template-columns:1fr}.sidebar{padding:9px 10px;border-right:0;border-bottom:1px solid var(--line)}.brand-icon{width:30px;height:30px}.brand-name{font-size:18px}.brand small{display:none}.nav-label,.sidebar-note{display:none}.nav{display:flex;overflow-x:auto;margin-top:7px}.nav button{white-space:nowrap;padding:8px}.nav-icon{display:none}.topbar{height:auto;padding:10px 13px}.saved{display:none}.content{padding:14px}.page-head{display:block}.page-head .actions{margin-top:12px}h1{font-size:26px}.stats{gap:7px}.stat{padding:11px}.stat strong{font-size:21px}.doc-side{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.form-grid .full{grid-column:auto}.answers{grid-template-columns:1fr}.quick-grid{grid-template-columns:1fr 1fr}}
+@media print{.sidebar,.topbar,.page-head,.doc-toolbar,.doc-side,.doc-bar,.dropzone{display:none!important}.app{display:block}.content{padding:0}.editor-paper{border:0}#editor{padding:0}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="brand-icon">t.</div><div><div class="brand-name">texticle<span>.</span></div><small>by GlassPickle</small></div></div>
+  <div><div class="nav-label">WORKSPACE</div><nav class="nav">
+    <button class="active" data-view="home"><span class="nav-icon">⌂</span>Home</button>
+    <button data-view="documents"><span class="nav-icon">▤</span>Documents</button>
+    <button data-view="flashcards"><span class="nav-icon">▣</span>Flashcards</button>
+    <button data-view="quizzes"><span class="nav-icon">✳</span>Quiz studio</button>
+  </nav></div>
+  <div><div class="nav-label">YOUR LIBRARY</div><nav class="nav">
+    <button data-view="documents"><span class="nav-icon">◷</span>Recent files</button>
+    <button data-view="flashcards"><span class="nav-icon">✧</span>Study sets</button>
+    <button data-view="quizzes"><span class="nav-icon">♧</span>Quiz games</button>
+  </nav></div>
+  <div class="sidebar-note"><div style="font-size:23px">☀</div><strong>Your space, your pace.</strong><p>Your library stays in this browser. Export a backup whenever you like.</p><button id="backupBtn">Export local backup</button></div>
+</aside>
+<main class="main">
+<header class="topbar"><div class="search"><input id="search" placeholder="Search documents, flashcards, quizzes…"></div><span class="saved">● Saved locally</span><button id="importTop">＋ Import file</button></header>
+<div class="content">
+
+<section id="view-home" class="view">
+  <div class="page-head"><div><div class="eyebrow">YOUR CREATIVE WORKSPACE</div><h1>Make room for good ideas.</h1><p>Write things. Learn things. Bring people together.</p></div><div class="actions"><button id="homeImport">↑ Import file</button><button class="primary" id="newDoc">＋ New document</button></div></div>
+  <div class="stats"><div class="stat"><span>Documents</span><strong id="statDocs">0</strong><small>Saved on this device</small></div><div class="stat"><span>Flashcards</span><strong id="statCards">0</strong><small>Ready for review</small></div><div class="stat"><span>Quiz games</span><strong id="statQuizzes">0</strong><small>Made by you</small></div></div>
+  <div class="home-grid">
+    <div class="panel"><div class="panel-head"><div><h2>Pick up where you left off</h2><p>Your latest local work</p></div><button data-goto="documents">All documents →</button></div><div id="recentFiles" class="file-list"></div></div>
+    <div class="panel"><div class="panel-head"><div><h2>What are we making?</h2><p>Start something in a few clicks</p></div></div><div class="quick-grid">
+      <button class="quick" id="quickDoc"><span class="emoji">📝</span><strong>A document</strong><small>Write, format, export</small></button>
+      <button class="quick" id="quickCards"><span class="emoji">🪄</span><strong>Study cards</strong><small>Learn with recall</small></button>
+      <button class="quick" id="quickQuiz"><span class="emoji">🎮</span><strong>A quiz game</strong><small>Play solo or pass-and-play</small></button>
+      <button class="quick" id="quickImport"><span class="emoji">📂</span><strong>Open a file</strong><small>DOCX, PDF, PPTX, TXT…</small></button>
+    </div></div>
+  </div>
+  <p class="note">Local-first means your library is stored in this browser profile. It does not sync between devices. Export a backup to keep a portable copy.</p>
+</section>
+
+<section id="view-documents" class="view hidden">
+  <div class="page-head"><div><div class="eyebrow">THE WRITING ROOM</div><h1>Documents</h1><p>Open, read, edit and export your work.</p></div><div class="actions"><button id="importDoc">↑ Import file</button><button class="primary" id="createDoc">＋ New document</button></div></div>
+  <div class="panel"><div class="panel-head"><div><h2>Your files</h2><p>DOCX, PDF, PPTX, TXT, HTML and Markdown</p></div><input id="fileFilter" placeholder="Filter files…" style="max-width:220px"></div><div id="allFiles" class="file-list"></div></div>
+  <div class="panel" style="margin-top:14px">
+    <div class="doc-bar"><input id="docTitle" value="Untitled document" aria-label="Document title"><span id="saveStatus" class="status">Ready</span><button id="undoBtn">↶ Undo</button><button id="redoBtn">↷ Redo</button><button id="downloadHtml">HTML</button><button id="downloadDocx">DOCX</button><button id="downloadPdf">PDF</button><button id="printDoc">Print</button></div>
+    <div class="doc-toolbar">
+      <select id="blockFormat" aria-label="Paragraph style"><option value="p">Paragraph</option><option value="h1">Heading 1</option><option value="h2">Heading 2</option><option value="h3">Heading 3</option><option value="blockquote">Quote</option><option value="pre">Code block</option></select>
+      <select id="fontName" aria-label="Font"><option value="Georgia">Georgia</option><option value="Arial">Arial</option><option value="Times New Roman">Times New Roman</option><option value="Verdana">Verdana</option><option value="Courier New">Courier New</option></select>
+      <button data-cmd="bold"><b>B</b></button><button data-cmd="italic"><i>I</i></button><button data-cmd="underline"><u>U</u></button><button data-cmd="strikeThrough"><s>S</s></button><button data-cmd="superscript">x²</button><button data-cmd="subscript">x₂</button>
+      <button data-cmd="justifyLeft">⇤</button><button data-cmd="justifyCenter">☷</button><button data-cmd="justifyRight">⇥</button>
+      <button data-cmd="insertUnorderedList">• List</button><button data-cmd="insertOrderedList">1. List</button><button id="linkBtn">↗ Link</button><button id="imageBtn">▧ Image</button><button id="tableBtn">▦ Table</button><button id="hrBtn">― Rule</button><button id="clearFormat">Clear format</button>
+      <label>Text <input id="textColor" type="color" value="#262d31" style="padding:2px;width:30px;height:28px"></label>
+      <label>Highlight <input id="hiliteColor" type="color" value="#fff0ad" style="padding:2px;width:30px;height:28px"></label>
+    </div>
+    <div class="doc-layout">
+      <div><div class="editor-paper"><div id="editor" contenteditable="true" spellcheck="true" aria-label="Document editor"><h1>Welcome to Texticle</h1><p>Your thoughts deserve a lovely place to land.</p><p>Start typing here, or import a DOCX, PDF, or PowerPoint file. Use the toolbar to format your work, insert tables and images, and export when you're ready.</p><h2>A few things to try</h2><ul><li>Use headings to give ideas structure.</li><li>Insert a table to organise information.</li><li>Turn study notes into flashcards.</li></ul></div></div></div>
+      <div class="doc-side">
+        <div class="panel"><h2 style="font-size:14px;margin-top:0">Document tools</h2><div class="field"><label>Jump to a heading</label><select id="headingJump"><option value="">Choose heading…</option></select></div><button id="wordCount" style="width:100%">0 words · 0 characters</button><button id="insertDate" style="width:100%;margin-top:7px">Insert today's date</button><button id="downloadText" style="width:100%;margin-top:7px">Export plain text</button></div>
+        <div class="panel"><h2 style="font-size:14px;margin-top:0">Quick notes</h2><textarea id="docNotes" rows="5" placeholder="Scratchpad for this document…"></textarea><p class="note">Notes save locally with this document.</p></div>
+      </div>
+    </div>
+    <div class="dropzone" id="dropzone"><strong>Drop a file here to open it</strong><p>DOCX, PDF, PPTX, TXT, HTML, Markdown · processed in your browser</p><button id="dropChoose">Choose a file</button></div>
+  </div>
+  <div class="panel hidden" id="importInfo" style="margin-top:14px"><div class="panel-head"><div><h2 id="importName">Imported file</h2><p id="importDesc"></p></div><button id="closeImportInfo">Hide preview</button></div><div id="importViewer"></div><p class="note" id="importNote"></p></div>
+</section>
+
+<section id="view-flashcards" class="view hidden">
+  <div class="page-head"><div><div class="eyebrow">A LITTLE PRACTICE GOES A LONG WAY</div><h1>Flashcards</h1><p>Build a study set, flip through it, and rate what you know.</p></div><div class="actions"><button id="cardsExport">Export set</button><button class="primary" id="newDeck">＋ New study set</button></div></div>
+  <div class="study-layout"><div>
+    <div class="panel" id="deckBuilder"><div class="panel-head"><div><h2 id="deckFormTitle">Create a study set</h2><p>One prompt, one answer. Add as many as you need.</p></div><button id="toggleDeckForm">Hide form</button></div>
+      <div class="field"><label for="deckName">Study set name</label><input id="deckName" placeholder="e.g. Biology · Cell structures"></div>
+      <div id="cardRows"></div><div class="actions"><button id="addCardRow">＋ Add card</button><button class="soft" id="makeCardsFromDoc">Use current document</button><button class="primary" id="saveDeck">Save study set</button></div>
+      <p class="note">Tip: write a specific question on the front and a concise explanation or example on the back.</p>
+    </div>
+    <div class="panel" style="margin-top:14px"><div class="panel-head"><div><h2>Study mode</h2><p>Recall, flip, then rate how well you knew it.</p></div><select id="studyDeckSelect" aria-label="Choose study set"></select></div>
+      <div class="progress"><span id="studyProgress"></span></div>
+      <div class="study-card" id="studyCard"><div class="tiny" id="studyLabel">QUESTION · 1 OF 1</div><div class="study-text" id="studyText">Create a set to start learning.</div><div class="study-bottom"><span id="studyHint">Try to answer before flipping.</span><button id="flipCard">Flip ↻</button></div></div>
+      <div class="actions" style="margin-top:12px"><button id="prevCard">← Previous</button><button id="nextCard">Next →</button><button id="shuffleCards">⇄ Shuffle</button><button id="restartStudy">↺ Restart</button></div>
+      <div class="rating-row hidden" id="ratingRow"><button data-rate="again">↺ Again</button><button data-rate="hard">◔ Hard</button><button data-rate="good">✓ Got it</button><button data-rate="easy">✦ Easy</button></div>
+    </div>
+  </div>
+  <div class="panel"><div class="panel-head"><div><h2>Your study sets</h2><p id="deckCount">0 sets</p></div></div><div id="deckList"></div><div class="field"><label>Import a set (JSON or CSV)</label><input id="deckImport" type="file" accept=".json,.csv,application/json"></div><p class="note">Study ratings save locally. Export JSON to move a set to another device.</p></div></div>
+</section>
+
+<section id="view-quizzes" class="view hidden">
+  <div class="page-head"><div><div class="eyebrow">BRING THE ROOM TO LIFE</div><h1>Quiz studio</h1><p>Create colorful multiple-choice games and play on this device.</p></div><div class="actions"><button id="quizExport">Export quiz</button><button class="primary" id="newQuiz">＋ New quiz</button></div></div>
+  <div class="home-grid"><div class="panel"><div class="panel-head"><div><h2 id="quizBuilderTitle">Build your quiz</h2><p>Write questions, choices, and mark the correct answer.</p></div><button id="addQuestion">＋ Add question</button></div>
+    <div class="field"><label for="quizName">Quiz title</label><input id="quizName" placeholder="e.g. The Great Science Showdown"></div>
+    <div class="form-grid"><div class="field"><label for="quizSeconds">Seconds per question</label><select id="quizSeconds"><option value="10">10 seconds</option><option value="15">15 seconds</option><option value="20" selected>20 seconds</option><option value="30">30 seconds</option><option value="45">45 seconds</option><option value="60">60 seconds</option></select></div><div class="field"><label for="quizPoints">Scoring</label><select id="quizPoints"><option value="speed">Speed bonus</option><option value="flat">Flat points</option></select></div></div>
+    <div id="questionRows"></div><div class="actions"><button class="primary" id="saveQuiz">Save quiz</button><button class="blue" id="playQuizBuilder">▶ Play this quiz</button></div>
+  </div><div class="panel"><div class="panel-head"><div><h2>Saved games</h2><p id="quizCount">0 quizzes</p></div></div><div id="quizList"></div><div class="field"><label>Import a quiz (JSON)</label><input id="quizImport" type="file" accept=".json,application/json"></div><p class="note">Local game mode runs on one device. Online rooms, join codes, and network leaderboards are not included.</p></div></div>
+  <div class="panel hidden" id="gamePanel" style="margin-top:15px"><div class="panel-head"><div><h2>Game on!</h2><p id="gameSubtitle">Local quiz game</p></div><button id="closeGame">Exit game</button></div><div id="gameArea"></div></div>
+</section>
+</div>
+</main>
+</div>
+
+<input type="file" id="fileInput" accept=".docx,.pdf,.pptx,.txt,.html,.htm,.md,.markdown" hidden>
+<input type="file" id="imageInput" accept="image/*" hidden>
+<div id="toast" class="toast hidden" role="status"></div>
+
+<!-- File readers and exporters run in the browser. These libraries require internet access. -->
+<script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+(() => {
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const KEY="texticle-local-workspace-v4";
+const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let state={docs:[],decks:[],quizzes:[],activeDoc:null,activeDeck:null,activeQuiz:null};
+let draftCards=[],draftQuestions=[],study={index:0,flipped:false,order:[]},game=null,gameTimer=null,history=[],future=[],toastTimer,saveTimer;
+function notify(s){$("#toast").textContent=s;$("#toast").classList.remove("hidden");clearTimeout(toastTimer);toastTimer=setTimeout(()=>$("#toast").classList.add("hidden"),2600)}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(state));$("#saveStatus").textContent="● Saved locally"}catch(e){$("#saveStatus").textContent="Storage full";notify("Browser storage is full. Export a backup and remove large images.")}stats()}
+function stats(){$("#statDocs").textContent=state.docs.length;$("#statCards").textContent=state.decks.reduce((n,d)=>n+d.cards.length,0);$("#statQuizzes").textContent=state.quizzes.length}
+function go(v){$$(".view").forEach(x=>x.classList.toggle("hidden",x.id!=="view-"+v));$$("[data-view]").forEach(b=>b.classList.toggle("active",b.dataset.view===v));if(v==="documents")renderDocs();if(v==="flashcards")renderDecks();if(v==="quizzes")renderQuizzes();window.scrollTo({top:0,behavior:"smooth"})}
+$$("[data-view]").forEach(b=>b.onclick=()=>go(b.dataset.view));$$("[data-goto]").forEach(b=>b.onclick=()=>go(b.dataset.goto));
+function newDoc(){const d={id:uid(),title:"Untitled document",html:"<h1>Untitled document</h1><p>Start writing…</p>",notes:"",type:"HTML",updated:Date.now()};state.docs.unshift(d);openDoc(d);go("documents");$("#editor").focus()}
+function currentDoc(){return state.docs.find(d=>d.id===state.activeDoc)}
+function openDoc(d){state.activeDoc=d.id;$("#docTitle").value=d.title;$("#editor").innerHTML=d.html||"<p></p>";$("#docNotes").value=d.notes||"";history=[];future=[];pushHistory();persist();renderDocs()}
+function saveDoc(){const d=currentDoc();if(!d)return;d.title=$("#docTitle").value.trim()||"Untitled document";d.html=$("#editor").innerHTML;d.notes=$("#docNotes").value;d.updated=Date.now();persist()}
+function fileKind(t){return({DOCX:"DOC",PDF:"PDF",PPTX:"PPT",HTML:"WEB",TXT:"TXT",MD:"MD"})[t]||t||"DOC"}
+function renderFileList(el,docs){el.innerHTML="";if(!docs.length){el.innerHTML='<div class="empty"><strong>No documents yet</strong>Import a file or create a new document.</div>';return}docs.slice().sort((a,b)=>b.updated-a.updated).forEach(d=>{const row=document.createElement("div");row.className="file-item";row.innerHTML=`<div class="file-icon">${esc(fileKind(d.type))}</div><div class="file-meta"><strong>${esc(d.title)}</strong><small>${esc(d.type||"HTML")} · ${new Date(d.updated).toLocaleDateString()}</small></div><button data-open="${d.id}">Open</button><button class="danger" data-del="${d.id}">×</button>`;el.append(row)});el.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{const d=state.docs.find(x=>x.id===b.dataset.open);if(d){saveDoc();openDoc(d);go("documents")}});el.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{if(confirm("Delete this document from local storage?")){state.docs=state.docs.filter(x=>x.id!==b.dataset.del);if(state.activeDoc===b.dataset.del)state.activeDoc=null;persist();renderDocs()}})}
+function renderDocs(){renderFileList($("#allFiles"),state.docs.filter(d=>d.title.toLowerCase().includes(($("#fileFilter").value||"").toLowerCase())));renderFileList($("#recentFiles"),state.docs.slice(0,4));const d=currentDoc();if(d&&document.activeElement!==$("#editor")){$("#docTitle").value=d.title;$("#editor").innerHTML=d.html;$("#docNotes").value=d.notes||""}refreshHeadings()}
+function refreshHeadings(){const sel=$("#headingJump");if(!sel)return;sel.innerHTML='<option value="">Choose heading…</option>';$("#editor").querySelectorAll("h1,h2,h3").forEach((h,i)=>{h.id=h.id||"heading-"+i;sel.add(new Option(h.innerText.slice(0,70),h.id))})}
+$("#headingJump").onchange=e=>{const el=document.getElementById(e.target.value);if(el)el.scrollIntoView({behavior:"smooth",block:"center"})};
+function pushHistory(){const h=$("#editor").innerHTML;if(history[history.length-1]!==h)history.push(h);if(history.length>60)history.shift();$("#undoBtn").disabled=history.length<2;$("#redoBtn").disabled=!future.length}
+function changed(){const d=currentDoc();if(d){d.html=$("#editor").innerHTML;d.title=$("#docTitle").value.trim()||"Untitled document";d.notes=$("#docNotes").value;d.updated=Date.now()}clearTimeout(saveTimer);saveTimer=setTimeout(()=>{pushHistory();persist();renderFileList($("#recentFiles"),state.docs.slice(0,4));refreshHeadings()},500)}
+$("#editor").addEventListener("input",changed);
+$("#docTitle").oninput=()=>{const d=currentDoc();if(d){d.title=$("#docTitle").value;d.updated=Date.now()}clearTimeout(saveTimer);saveTimer=setTimeout(()=>{persist();renderDocs()},500)};
+$("#docNotes").oninput=()=>{const d=currentDoc();if(d){d.notes=$("#docNotes").value;persist()}};
+$("#undoBtn").onclick=()=>{if(history.length>1){future.push(history.pop());$("#editor").innerHTML=history[history.length-1];changed();$("#redoBtn").disabled=false}};
+$("#redoBtn").onclick=()=>{if(future.length){history.push(future.pop());$("#editor").innerHTML=history[history.length-1];changed()}};
+document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="s"){e.preventDefault();saveDoc();notify("Saved on this device")}});
+$$("[data-cmd]").forEach(b=>b.onclick=()=>{ $("#editor").focus();document.execCommand(b.dataset.cmd,false,null);changed()});
+$("#blockFormat").onchange=e=>{ $("#editor").focus();document.execCommand("formatBlock",false,e.target.value);changed()};
+$("#fontName").onchange=e=>{ $("#editor").focus();document.execCommand("fontName",false,e.target.value);changed()};
+$("#textColor").oninput=e=>{ $("#editor").focus();document.execCommand("foreColor",false,e.target.value);changed()};
+$("#hiliteColor").oninput=e=>{ $("#editor").focus();document.execCommand("hiliteColor",false,e.target.value);changed()};
+$("#linkBtn").onclick=()=>{const u=prompt("Enter a link URL");if(u){$("#editor").focus();document.execCommand("createLink",false,u);changed()}};
+$("#imageBtn").onclick=()=>$("#imageInput").click();
+$("#imageInput").onchange=async e=>{const f=e.target.files[0];if(!f)return;const data=await readDataURL(f);$("#editor").focus();document.execCommand("insertImage",false,data);changed();e.target.value=""};
+$("#tableBtn").onclick=()=>{const r=Math.min(12,Math.max(1,+prompt("Rows?","3")||3)),c=Math.min(8,Math.max(1,+prompt("Columns?","3")||3));let h="<table><tbody>";for(let i=0;i<r;i++){h+="<tr>";for(let j=0;j<c;j++)h+=i===0?"<th>Heading</th>":"<td>Cell</td>";h+="</tr>"}h+="</tbody></table><p></p>";$("#editor").focus();document.execCommand("insertHTML",false,h);changed()};
+$("#hrBtn").onclick=()=>{document.execCommand("insertHorizontalRule");changed()};
+$("#clearFormat").onclick=()=>{document.execCommand("removeFormat");document.execCommand("formatBlock",false,"p");changed()};
+$("#wordCount").onclick=()=>{const t=$("#editor").innerText.trim();notify(`${t?t.split(/\s+/).length:0} words · ${t.length} characters`)};
+$("#insertDate").onclick=()=>{document.execCommand("insertText",false,new Date().toLocaleDateString());changed()};
+function download(blob,name){const a=document.createElement("a"),u=URL.createObjectURL(blob);a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1500)}
+function baseName(){return ($("#docTitle").value.trim()||"texticle-document").replace(/[\\/:*?"<>|]+/g,"-")}
+function readText(f){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsText(f)})}
+function readDataURL(f){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(f)})}
+$("#downloadHtml").onclick=()=>{saveDoc();download(new Blob([`<!doctype html><meta charset="utf-8"><title>${esc($("#docTitle").value)}</title><body>${$("#editor").innerHTML}</body>`],{type:"text/html;charset=utf-8"}),baseName()+".html")};
+$("#downloadText").onclick=()=>download(new Blob([$("#editor").innerText],{type:"text/plain;charset=utf-8"}),baseName()+".txt");
+$("#printDoc").onclick=()=>window.print();
+$("#downloadPdf").onclick=()=>{if(!window.jspdf){notify("PDF export library needs internet access");return}const {jsPDF}=window.jspdf,pdf=new jsPDF({unit:"pt",format:"a4"}),lines=pdf.splitTextToSize($("#editor").innerText,500);let y=55;for(const line of lines){if(y>785){pdf.addPage();y=55}pdf.text(line,55,y);y+=17}pdf.save(baseName()+".pdf");notify("Text PDF exported")};
+$("#downloadDocx").onclick=async()=>{try{if(!window.docx)throw Error("DOCX export needs internet access");const {Document,Packer,Paragraph,TextRun,HeadingLevel}=docx,root=document.createElement("div");root.innerHTML=$("#editor").innerHTML;const out=[];function walk(el){if(el.nodeType===3){if(el.textContent.trim())out.push(new Paragraph({children:[new TextRun(el.textContent)]}));return}if(el.nodeType!==1)return;const tag=el.tagName.toLowerCase(),txt=el.innerText||el.textContent||"";if(/^h[1-3]$/.test(tag)){out.push(new Paragraph({text:txt,heading:tag==="h1"?HeadingLevel.HEADING_1:tag==="h2"?HeadingLevel.HEADING_2:HeadingLevel.HEADING_3}));return}if(tag==="ul"||tag==="ol"){[...el.children].forEach(li=>out.push(new Paragraph({text:li.innerText||li.textContent,bullet:tag==="ul"?{indent:360}:undefined})));return}if(tag==="table"){el.querySelectorAll("tr").forEach(tr=>out.push(new Paragraph({text:[...tr.children].map(c=>c.innerText).join(" | ")})));return}if(["p","blockquote","pre","div","li"].includes(tag)){out.push(new Paragraph({children:[new TextRun({text:txt,bold:!!el.querySelector("b,strong"),italics:!!el.querySelector("i,em")})]}));return}[...el.childNodes].forEach(walk)}[...root.childNodes].forEach(walk);const d=new Document({sections:[{children:out.length?out:[new Paragraph("")]}]});download(await Packer.toBlob(d),baseName()+".docx");notify("DOCX exported")}catch(e){notify(e.message||"DOCX export failed")}};
+function sanitizeHTML(html){const doc=new DOMParser().parseFromString(html,"text/html");doc.querySelectorAll("script,style,iframe,object,embed,form,base,meta,link,svg").forEach(n=>n.remove());doc.body.querySelectorAll("*").forEach(el=>[...el.attributes].forEach(a=>{if(/^on/i.test(a.name)||["srcdoc","formaction"].includes(a.name)||(["href","src"].includes(a.name)&&/^\s*javascript:/i.test(a.value)))el.removeAttribute(a.name)}));return doc.body.innerHTML}
+function triggerImport(){$("#fileInput").click()}
+["#importTop","#homeImport","#importDoc","#dropChoose","#quickImport"].forEach(s=>$(s).onclick=triggerImport);
+$("#dropzone").ondragover=e=>{e.preventDefault();$("#dropzone").style.background="#edf3ed"};
+$("#dropzone").ondragleave=()=>$("#dropzone").style.background="";
+$("#dropzone").ondrop=e=>{e.preventDefault();$("#dropzone").style.background="";if(e.dataTransfer.files[0])processFile(e.dataTransfer.files[0])};
+$("#fileInput").onchange=e=>{if(e.target.files[0])processFile(e.target.files[0]);e.target.value=""};
+async function processFile(f){const ext=f.name.split(".").pop().toLowerCase();$("#importInfo").classList.remove("hidden");$("#importName").textContent=f.name;$("#importDesc").textContent=`${Math.round(f.size/1024)} KB · ${ext.toUpperCase()}`;$("#importViewer").innerHTML="<p>Opening file…</p>";let html="",type=ext.toUpperCase();try{
+if(ext==="docx"){if(!window.mammoth)throw Error("DOCX reader library unavailable");const r=await mammoth.convertToHtml({arrayBuffer:await f.arrayBuffer()});html=sanitizeHTML(r.value);$("#importNote").textContent="DOCX text and common formatting are imported into the editor. Complex layouts and embedded objects may change."}
+else if(ext==="pdf"){if(!window.pdfjsLib)throw Error("PDF reader library unavailable");pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";const pdf=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise;$("#importViewer").innerHTML='<div class="viewer" id="pdfViewer"></div>';let sections=[];for(let n=1;n<=pdf.numPages;n++){const p=await pdf.getPage(n),vp=p.getViewport({scale:1.15}),canvas=document.createElement("canvas");canvas.width=vp.width;canvas.height=vp.height;canvas.className="pdf-page";await p.render({canvasContext:canvas.getContext("2d"),viewport:vp}).promise;$("#pdfViewer").append(canvas);const text=await p.getTextContent();sections.push(`<h2>Page ${n}</h2><p>${esc(text.items.map(x=>x.str).join(" "))}</p>`)}html=sections.join("");$("#importNote").textContent="Rendered PDF pages are shown above for reading. Extracted text is editable below; exporting will create a new document, not rewrite the original PDF layout. Scanned pages require OCR, which is not included."}
+else if(ext==="pptx"){if(!window.JSZip)throw Error("PPTX reader library unavailable");const zip=await JSZip.loadAsync(await f.arrayBuffer()),names=Object.keys(zip.files).filter(n=>/^ppt\/slides\/slide\d+\.xml$/.test(n)).sort((a,b)=>+a.match(/slide(\d+)/)[1]-+b.match(/slide(\d+)/)[1]);let slides=[];for(let i=0;i<names.length;i++){const xml=await zip.files[names[i]].async("text"),xmlDoc=new DOMParser().parseFromString(xml,"application/xml"),shapes=[...xmlDoc.getElementsByTagName("p:sp")];let lines=[];shapes.forEach(s=>{const t=[...s.getElementsByTagName("a:t")].map(x=>x.textContent).join("");if(t)lines.push(t)});slides.push({title:lines.shift()||`Slide ${i+1}`,body:lines.join("\n")})}html=slides.map((s,i)=>`<h1>${esc(s.title)}</h1><p>${esc(s.body).replace(/\n/g,"<br>")}</p><hr><p><em>Slide ${i+1}</em></p>`).join("");$("#importViewer").innerHTML='<div class="viewer" id="pptViewer"></div>';slides.forEach((s,i)=>{const el=document.createElement("div");el.className="slide";el.innerHTML=`<div class="eyebrow">SLIDE ${i+1} / ${slides.length}</div><h2>${esc(s.title)}</h2><p>${esc(s.body)}</p>`;$("#pptViewer").append(el)});$("#importNote").textContent="Slide preview and extracted text are available. Editing here changes text content; the original theme, animations, notes, media and precise positioning are not preserved on export."}
+else if(["txt","md","markdown"].includes(ext)){const t=await readText(f);html=ext==="txt"?t.split(/\n{2,}/).map(p=>`<p>${esc(p).replace(/\n/g,"<br>")}</p>`).join(""):`<pre>${esc(t)}</pre>`}
+else if(["html","htm"].includes(ext))html=sanitizeHTML(await readText(f));else throw Error("Unsupported file type");
+const d={id:uid(),title:f.name.replace(/\.[^.]+$/,""),html,notes:"",type,updated:Date.now()};state.docs.unshift(d);openDoc(d);go("documents");persist();notify("File opened");}catch(e){$("#importViewer").innerHTML=`<div class="empty"><strong>Could not open this file</strong>${esc(e.message||e)}</div>`;notify("Could not open file")}}
+$("#closeImportInfo").onclick=()=>$("#importInfo").classList.add("hidden");
+$("#fileFilter").oninput=renderDocs;
+$("#backupBtn").onclick=()=>{saveDoc();download(new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),"texticle-backup.json")};
+$("#newDoc").onclick=$("#createDoc").onclick=$("#quickDoc").onclick=newDoc;
+
+/* Flashcards */
+function addCardRow(q="",a=""){draftCards.push({q,a});renderCardRows()}
+function renderCardRows(){const box=$("#cardRows");box.innerHTML="";draftCards.forEach((c,i)=>{const row=document.createElement("div");row.className="form-grid";row.style.cssText="padding:10px;border:1px solid var(--line);border-radius:12px;margin:9px 0";row.innerHTML=`<div class="field"><label>Front · prompt ${i+1}</label><textarea rows="2" data-q="${i}" placeholder="What do you want to remember?">${esc(c.q)}</textarea></div><div class="field"><label>Back · answer</label><textarea rows="2" data-a="${i}" placeholder="Answer, explanation or example…">${esc(c.a)}</textarea></div><div class="full" style="text-align:right"><button class="danger" data-rm="${i}">Remove</button></div>`;box.append(row)});box.querySelectorAll("[data-q]").forEach(e=>e.oninput=()=>draftCards[+e.dataset.q].q=e.value);box.querySelectorAll("[data-a]").forEach(e=>e.oninput=()=>draftCards[+e.dataset.a].a=e.value);box.querySelectorAll("[data-rm]").forEach(e=>e.onclick=()=>{draftCards.splice(+e.dataset.rm,1);renderCardRows()})}
+$("#addCardRow").onclick=()=>addCardRow();
+$("#toggleDeckForm").onclick=()=>{$("#cardRows").classList.toggle("hidden");$("#toggleDeckForm").textContent=$("#cardRows").classList.contains("hidden")?"Show form":"Hide form"};
+$("#newDeck").onclick=()=>{draftCards=[];addCardRow();$("#deckName").value="";$("#deckFormTitle").textContent="Create a study set";$("#deckBuilder").scrollIntoView({behavior:"smooth"})};
+$("#makeCardsFromDoc").onclick=()=>{const d=currentDoc();if(!d){notify("Open a document first");go("documents");return}const lines=$("#editor").innerText.split(/\n+/).map(x=>x.trim()).filter(x=>x.length>12).slice(0,15);if(!lines.length){notify("Add some document text first");return}draftCards=lines.map(x=>({q:x.length>115?x.slice(0,112)+"…":x,a:"Explain this idea in your own words:\n"+x}));renderCardRows();$("#deckName").value=d.title+" — review";notify("Draft cards created. Edit them before saving.")};
+$("#saveDeck").onclick=()=>{const cards=draftCards.map(c=>({q:c.q.trim(),a:c.a.trim()})).filter(c=>c.q&&c.a);if(!cards.length){notify("Add a prompt and answer first");return}const name=$("#deckName").value.trim()||"Untitled study set",old=state.decks.find(d=>d.id===state.activeDeck&&$("#deckFormTitle").textContent==="Edit study set");if(old){old.name=name;old.cards=cards;old.updated=Date.now()}else{const d={id:uid(),name,cards,updated:Date.now(),ratings:{}};state.decks.unshift(d);state.activeDeck=d.id}persist();renderDecks();notify("Study set saved locally")};
+function selectDeck(id){state.activeDeck=id;const d=state.decks.find(x=>x.id===id);study={index:0,flipped:false,order:d?d.cards.map((_,i)=>i):[]};renderDecks();renderStudy()}
+function renderDecks(){const box=$("#deckList");box.innerHTML="";$("#deckCount").textContent=state.decks.length+" sets";if(!state.decks.length)box.innerHTML='<div class="empty"><strong>No study sets yet</strong>Create your first set to begin.</div>';state.decks.forEach(d=>{const el=document.createElement("div");el.className="deck-item"+(d.id===state.activeDeck?" active":"");el.innerHTML=`<strong>${esc(d.name)}</strong><small>${d.cards.length} cards · ${new Date(d.updated).toLocaleDateString()}</small><div class="actions" style="margin-top:8px"><button data-study="${d.id}">Study</button><button data-edit="${d.id}">Edit</button><button class="danger" data-delete="${d.id}">Delete</button></div>`;box.append(el)});box.querySelectorAll("[data-study]").forEach(b=>b.onclick=()=>selectDeck(b.dataset.study));box.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>{const d=state.decks.find(x=>x.id===b.dataset.edit);state.activeDeck=d.id;$("#deckName").value=d.name;draftCards=d.cards.map(c=>({...c}));renderCardRows();$("#deckFormTitle").textContent="Edit study set";$("#deckBuilder").scrollIntoView({behavior:"smooth"})});box.querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>{if(confirm("Delete this study set?")){state.decks=state.decks.filter(d=>d.id!==b.dataset.delete);if(state.activeDeck===b.dataset.delete)state.activeDeck=state.decks[0]?.id||null;persist();renderDecks();renderStudy()}});const sel=$("#studyDeckSelect"),old=state.activeDeck;sel.innerHTML=state.decks.map(d=>`<option value="${d.id}">${esc(d.name)}</option>`).join("");if(old&&state.decks.some(d=>d.id===old))sel.value=old;else if(state.decks[0]){state.activeDeck=state.decks[0].id;sel.value=state.activeDeck;study.order=state.decks[0].cards.map((_,i)=>i)}renderStudy()}
+$("#studyDeckSelect").onchange=e=>selectDeck(e.target.value);
+function renderStudy(){const d=state.decks.find(x=>x.id===state.activeDeck);if(!d||!d.cards.length){$("#studyText").textContent="Create a study set to start learning.";$("#studyLabel").textContent="READY WHEN YOU ARE";$("#studyProgress").style.width="0";$("#ratingRow").classList.add("hidden");return}if(!study.order.length)study.order=d.cards.map((_,i)=>i);study.index=Math.max(0,Math.min(study.index,study.order.length-1));const c=d.cards[study.order[study.index]];$("#studyCard").classList.toggle("answer",study.flipped);$("#studyLabel").textContent=(study.flipped?"ANSWER":"QUESTION")+` · ${study.index+1} OF ${study.order.length}`;$("#studyText").textContent=study.flipped?c.a:c.q;$("#studyHint").textContent=study.flipped?"Rate your recall below.":"Try to answer before flipping.";$("#flipCard").textContent=study.flipped?"Show question ↻":"Flip to answer ↻";$("#studyProgress").style.width=((study.index+1)/study.order.length*100)+"%";$("#ratingRow").classList.toggle("hidden",!study.flipped)}
+$("#flipCard").onclick=()=>{study.flipped=!study.flipped;renderStudy()};
+$("#prevCard").onclick=()=>{study.index=Math.max(0,study.index-1);study.flipped=false;renderStudy()};
+$("#nextCard").onclick=()=>{if(study.order.length){study.index=(study.index+1)%study.order.length;study.flipped=false;renderStudy()}};
+$("#shuffleCards").onclick=()=>{for(let i=study.order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[study.order[i],study.order[j]]=[study.order[j],study.order[i]]}study.index=0;study.flipped=false;renderStudy()};
+$("#restartStudy").onclick=()=>{const d=state.decks.find(x=>x.id===state.activeDeck);study={index:0,flipped:false,order:d?d.cards.map((_,i)=>i):[]};renderStudy()};
+$$("[data-rate]").forEach(b=>b.onclick=()=>{const d=state.decks.find(x=>x.id===state.activeDeck);if(!d)return;d.ratings=d.ratings||{};d.ratings[d.cards[study.order[study.index]].q]=b.dataset.rate;study.index=(study.index+1)%study.order.length;study.flipped=false;persist();renderStudy()});
+$("#cardsExport").onclick=()=>{const d=state.decks.find(x=>x.id===state.activeDeck);if(!d){notify("Choose a study set first");return}download(new Blob([JSON.stringify(d,null,2)],{type:"application/json"}),d.name.replace(/[^a-z0-9-_]+/gi,"-")+".json")};
+$("#deckImport").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{let d;if(f.name.toLowerCase().endsWith(".csv")){const lines=(await readText(f)).split(/\r?\n/).filter(Boolean);const rows=lines.map(l=>l.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(x=>x.trim().replace(/^"|"$/g,"")));d={name:f.name.replace(/\.csv$/i,""),cards:rows.slice(1).map(r=>({q:r[0],a:r[1]})).filter(c=>c.q&&c.a)}}else d=JSON.parse(await readText(f));if(!Array.isArray(d.cards))throw Error("JSON needs a cards array");d.id=uid();d.updated=Date.now();state.decks.unshift(d);state.activeDeck=d.id;persist();renderDecks();notify("Study set imported")}catch(e){notify("Import failed: "+e.message)}e.target.value=""};
+
+/* Quiz builder and local game mode */
+function addQuestion(q={}){draftQuestions.push({q:q.q||"",answers:Array.isArray(q.answers)?q.answers.slice(0,4):["","","",""],correct:Number.isInteger(q.correct)?q.correct:0,explanation:q.explanation||""});while(draftQuestions[draftQuestions.length-1].answers.length<4)draftQuestions[draftQuestions.length-1].answers.push("");renderQuestionRows()}
+function renderQuestionRows(){const box=$("#questionRows");box.innerHTML="";draftQuestions.forEach((q,i)=>{const row=document.createElement("div");row.className="panel";row.style.cssText="padding:14px;margin:12px 0;background:#fbfaf6";row.innerHTML=`<div class="panel-head"><h2>Question ${i+1}</h2><button class="danger" data-rmq="${i}">Remove</button></div><div class="field"><label>Question prompt</label><textarea rows="2" data-qq="${i}" placeholder="Ask something interesting…">${esc(q.q)}</textarea></div><div class="form-grid">${q.answers.map((a,j)=>`<div class="field"><label>Choice ${j+1}</label><input data-ans="${i},${j}" value="${esc(a)}" placeholder="Answer choice ${j+1}"></div>`).join("")}</div><div class="form-grid"><div class="field"><label>Correct answer</label><select data-correct="${i}">${q.answers.map((a,j)=>`<option value="${j}" ${q.correct===j?"selected":""}>Choice ${j+1}${a?" — "+esc(a.slice(0,28)):""}</option>`).join("")}</select></div><div class="field"><label>Explanation (optional)</label><input data-exp="${i}" value="${esc(q.explanation)}" placeholder="Why is that the answer?"></div></div>`;box.append(row)});box.querySelectorAll("[data-qq]").forEach(e=>e.oninput=()=>draftQuestions[+e.dataset.qq].q=e.value);box.querySelectorAll("[data-ans]").forEach(e=>e.oninput=()=>{const [i,j]=e.dataset.ans.split(",").map(Number);draftQuestions[i].answers[j]=e.value});box.querySelectorAll("[data-correct]").forEach(e=>e.onchange=()=>{draftQuestions[+e.dataset.correct].correct=+e.value;renderQuestionRows()});box.querySelectorAll("[data-exp]").forEach(e=>e.oninput=()=>draftQuestions[+e.dataset.exp].explanation=e.value);box.querySelectorAll("[data-rmq]").forEach(e=>e.onclick=()=>{draftQuestions.splice(+e.dataset.rmq,1);renderQuestionRows()})}
+function quizFromForm(){return{name:$("#quizName").value.trim()||"Untitled quiz",seconds:+$("#quizSeconds").value,points:$("#quizPoints").value,questions:draftQuestions.map(q=>({q:q.q.trim(),answers:q.answers.map(a=>a.trim()),correct:q.correct,explanation:q.explanation.trim()})).filter(q=>q.q&&q.answers.filter(Boolean).length>=2&&q.answers[q.correct])}}
+function saveQuiz(){const q=quizFromForm();if(!q.questions.length){notify("Add a question with two or more choices and a correct answer");return null}const old=state.quizzes.find(x=>x.id===state.activeQuiz&&$("#quizBuilderTitle").textContent==="Edit quiz");if(old){Object.assign(old,q,{updated:Date.now()});persist();renderQuizzes();notify("Quiz updated");return old}q.id=uid();q.updated=Date.now();state.quizzes.unshift(q);state.activeQuiz=q.id;persist();renderQuizzes();notify("Quiz saved locally");return q}
+$("#addQuestion").onclick=()=>addQuestion();
+$("#newQuiz").onclick=()=>{state.activeQuiz=null;$("#quizName").value="";draftQuestions=[];addQuestion();$("#quizBuilderTitle").textContent="Build your quiz";$("#questionRows").scrollIntoView({behavior:"smooth"})};
+$("#saveQuiz").onclick=saveQuiz;
+$("#playQuizBuilder").onclick=()=>{const q=saveQuiz();if(q)startGame(q)};
+function renderQuizzes(){const box=$("#quizList");box.innerHTML="";$("#quizCount").textContent=state.quizzes.length+" quizzes";if(!state.quizzes.length)box.innerHTML='<div class="empty"><strong>No quiz games yet</strong>Build a quiz and challenge yourself.</div>';state.quizzes.forEach(q=>{const el=document.createElement("div");el.className="deck-item";el.innerHTML=`<strong>${esc(q.name)}</strong><small>${q.questions.length} questions · ${q.seconds}s each</small><div class="actions" style="margin-top:8px"><button class="blue" data-play="${q.id}">▶ Play</button><button data-editq="${q.id}">Edit</button><button class="danger" data-delq="${q.id}">Delete</button></div>`;box.append(el)});box.querySelectorAll("[data-play]").forEach(b=>b.onclick=()=>startGame(state.quizzes.find(q=>q.id===b.dataset.play)));box.querySelectorAll("[data-editq]").forEach(b=>b.onclick=()=>{const q=state.quizzes.find(x=>x.id===b.dataset.editq);state.activeQuiz=q.id;$("#quizName").value=q.name;$("#quizSeconds").value=q.seconds;$("#quizPoints").value=q.points||"speed";draftQuestions=q.questions.map(x=>({...x,answers:x.answers.slice()}));renderQuestionRows();$("#quizBuilderTitle").textContent="Edit quiz";$("#questionRows").scrollIntoView({behavior:"smooth"})});box.querySelectorAll("[data-delq]").forEach(b=>b.onclick=()=>{if(confirm("Delete this quiz?")){state.quizzes=state.quizzes.filter(q=>q.id!==b.dataset.delq);persist();renderQuizzes()}})}
+$("#quizExport").onclick=()=>{const q=state.quizzes.find(q=>q.id===state.activeQuiz)||state.quizzes[0];if(!q){notify("Save a quiz first");return}download(new Blob([JSON.stringify(q,null,2)],{type:"application/json"}),q.name.replace(/[^a-z0-9-_]+/gi,"-")+".json")};
+$("#quizImport").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const q=JSON.parse(await readText(f));if(!Array.isArray(q.questions))throw Error("JSON needs a questions array");q.id=uid();q.updated=Date.now();state.quizzes.unshift(q);persist();renderQuizzes();notify("Quiz imported")}catch(err){notify("Import failed: "+err.message)}e.target.value=""};
+function startGame(q){if(!q||!q.questions.length){notify("This quiz has no playable questions");return}clearInterval(gameTimer);game={quiz:q,index:0,score:0,answers:[],answered:false,timeLeft:q.seconds};$("#gamePanel").classList.remove("hidden");$("#gamePanel").scrollIntoView({behavior:"smooth"});renderGame()}
+function renderGame(){clearInterval(gameTimer);if(!game)return;const g=game,q=g.quiz.questions[g.index];$("#gameSubtitle").textContent=`${g.quiz.name} · Question ${g.index+1} of ${g.quiz.questions.length}`;const area=$("#gameArea");if(g.finished){area.innerHTML=`<div class="quiz-host"><div class="eyebrow" style="color:#b5c7ff">GAME COMPLETE</div><div class="quiz-score">${g.score.toLocaleString()} pts</div><h2>Nice playing!</h2><p>You got ${g.answers.filter(a=>a.correct).length} of ${g.quiz.questions.length} questions right.</p><div class="actions"><button class="blue" id="replay">Play again</button><button id="review">Review answers</button></div><div id="reviewArea"></div></div>`;$("#replay").onclick=()=>startGame(g.quiz);$("#review").onclick=()=>$("#reviewArea").innerHTML=g.answers.map((a,i)=>`<div style="padding:12px;border-bottom:1px solid #ffffff25">${i+1}. ${esc(a.question)}<br>Correct answer: ${esc(a.correctAnswer)} · ${a.correct?"✓":"✕"}<br>${esc(a.explanation||"")}</div>`).join("");return}
+const secs=g.timeLeft??g.quiz.seconds;area.innerHTML=`<div class="quiz-host"><div class="quiz-top"><span>⚡ ${esc(g.quiz.name)}</span><span id="timerText">${secs}s</span></div><div class="progress" style="background:#ffffff25"><span id="timerBar" style="width:${secs/g.quiz.seconds*100}%;background:#f4b64c"></span></div><div class="quiz-question">${esc(q.q)}</div><div class="answers">${q.answers.map((a,i)=>a?`<button class="answer-btn" data-answer="${i}">${["▲","◆","●","■"][i]} &nbsp; ${esc(a)}</button>`:"").join("")}</div><div id="feedback" style="margin-top:15px;color:#c8d0ef"></div><div class="quiz-top" style="margin-top:22px"><span>Score: ${g.score.toLocaleString()}</span><span>Question ${g.index+1}/${g.quiz.questions.length}</span></div></div>`;
+let left=secs;$$("[data-answer]").forEach(b=>b.onclick=()=>answerGame(+b.dataset.answer));gameTimer=setInterval(()=>{if(!game||game.answered){clearInterval(gameTimer);return}left--;g.timeLeft=left;const t=$("#timerText"),bar=$("#timerBar");if(t)t.textContent=left+"s";if(bar)bar.style.width=Math.max(0,left/g.quiz.seconds*100)+"%";if(left<=0)answerGame(-1)},1000)}
+function answerGame(choice){if(!game||game.answered)return;game.answered=true;clearInterval(gameTimer);const g=game,q=g.quiz.questions[g.index],correct=choice===q.correct,time=Math.max(0,g.timeLeft??g.quiz.seconds),points=correct?(g.quiz.points==="flat"?1000:Math.max(500,Math.round(500+500*time/g.quiz.seconds))):0;g.score+=points;g.answers.push({question:q.q,choice,correct,correctAnswer:q.answers[q.correct],explanation:q.explanation,points});$$("[data-answer]").forEach(b=>{const i=+b.dataset.answer;b.disabled=true;if(i===q.correct)b.classList.add("correct");else if(i===choice)b.classList.add("wrong")});$("#feedback").innerHTML=`<strong>${correct?"✓ Correct!":"Not quite."}</strong> ${esc(q.explanation||"Correct answer: "+q.answers[q.correct])} <span style="float:right">+${points}</span>`;const next=document.createElement("button");next.className="blue";next.style.marginTop="14px";next.textContent=g.index===g.quiz.questions.length-1?"See results →":"Next question →";next.onclick=()=>{g.index++;if(g.index>=g.quiz.questions.length){g.finished=true;renderGame()}else{g.timeLeft=g.quiz.seconds;g.answered=false;renderGame()}};$("#gameArea .quiz-host").append(next)}
+$("#closeGame").onclick=()=>{clearInterval(gameTimer);game=null;$("#gamePanel").classList.add("hidden")};
+$("#quickCards").onclick=()=>{go("flashcards");if(!draftCards.length)addCardRow()};
+$("#quickQuiz").onclick=()=>{go("quizzes");if(!draftQuestions.length)addQuestion()};
+$("#search").oninput=e=>{const q=e.target.value.trim().toLowerCase();if(!q)return;const d=state.docs.find(x=>x.title.toLowerCase().includes(q)||x.html.toLowerCase().includes(q));if(d){openDoc(d);go("documents");return}const deck=state.decks.find(x=>x.name.toLowerCase().includes(q)||x.cards.some(c=>(c.q+c.a).toLowerCase().includes(q)));if(deck){go("flashcards");selectDeck(deck.id);return}const quiz=state.quizzes.find(x=>x.name.toLowerCase().includes(q)||x.questions.some(y=>y.q.toLowerCase().includes(q)));if(quiz)go("quizzes")};
+function init(){try{const x=JSON.parse(localStorage.getItem(KEY)||"{}");state={docs:Array.isArray(x.docs)?x.docs:[],decks:Array.isArray(x.decks)?x.decks:[],quizzes:Array.isArray(x.quizzes)?x.quizzes:[],activeDoc:x.activeDoc||null,activeDeck:x.activeDeck||null,activeQuiz:x.activeQuiz||null}}catch(e){}if(!state.docs.length){const d={id:uid(),title:"Welcome to Texticle",html:$("#editor").innerHTML,notes:"",type:"HTML",updated:Date.now()};state.docs.push(d);state.activeDoc=d.id}if(!state.decks.length){state.decks.push({id:uid(),name:"Study smarter · Starter set",cards:[{q:"What is active recall?",a:"Retrieving information from memory instead of simply rereading it."},{q:"What makes a useful flashcard?",a:"A focused question, a clear answer, and one main idea per card."}],ratings:{},updated:Date.now()})}if(!state.quizzes.length){state.quizzes.push({id:uid(),name:"Warm-up quiz",seconds:20,points:"speed",questions:[{q:"Which study technique asks you to retrieve facts from memory?",answers:["Active recall","Passive rereading","Highlighting alone","Copying notes"],correct:0,explanation:"Active recall strengthens retrieval by making you produce the answer."},{q:"What belongs on a good flashcard?",answers:["Several unrelated chapters","One focused prompt and answer","Only decorative pictures","A whole textbook page"],correct:1,explanation:"One idea per card makes practice more focused."}],updated:Date.now()})}persist();renderStats();renderDocs();renderDecks();renderQuizzes();const d=currentDoc();if(d)openDoc(d);addCardRow("What is active recall?","Retrieving information from memory instead of simply rereading it.");addQuestion({q:"What makes a good study question?",answers:["It tests recall or understanding","It gives away the answer","It has no clear focus","It is as long as possible"],correct:0,explanation:"Specific prompts encourage active retrieval."})}
+init();
+})();
+</script>
+</body>
+</html>
